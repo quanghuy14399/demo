@@ -1,8 +1,8 @@
-import { createRenderer } from 'vue-bundle-renderer/runtime';
-import { eventHandler, setResponseStatus, getQuery, createError } from 'h3';
-import { renderToString } from 'vue/server-renderer';
-import { u as useNitroApp, a as useRuntimeConfig, g as getRouteRules } from '../nitro/node-server.mjs';
-import { joinURL } from 'ufo';
+import { createRenderer } from 'file://E:/Freelancer/Demo/demo/node_modules/vue-bundle-renderer/dist/runtime.mjs';
+import { eventHandler, setResponseStatus, getQuery, createError, appendHeader } from 'file://E:/Freelancer/Demo/demo/node_modules/h3/dist/index.mjs';
+import { joinURL, withoutTrailingSlash } from 'file://E:/Freelancer/Demo/demo/node_modules/ufo/dist/index.mjs';
+import { renderToString } from 'file://E:/Freelancer/Demo/demo/node_modules/vue/server-renderer/index.mjs';
+import { u as useNitroApp, a as useRuntimeConfig, g as getRouteRules } from './nitro/nitro-prerenderer.mjs';
 
 function defineRenderHandler(handler) {
   return eventHandler(async (event) => {
@@ -282,10 +282,10 @@ function publicAssetsURL(...path) {
 
 globalThis.__buildAssetsURL = buildAssetsURL;
 globalThis.__publicAssetsURL = publicAssetsURL;
-const getClientManifest = () => import('../app/client.manifest.mjs').then((r) => r.default || r).then((r) => typeof r === "function" ? r() : r);
-const getStaticRenderedHead = () => import('../rollup/_virtual_head-static.mjs').then((r) => r.default || r);
-const getServerEntry = () => import('../app/server.mjs').then((r) => r.default || r);
-const getSSRStyles = lazyCachedFunction(() => import('../app/styles.mjs').then((r) => r.default || r));
+const getClientManifest = () => import('./app/client.manifest.mjs').then((r) => r.default || r).then((r) => typeof r === "function" ? r() : r);
+const getStaticRenderedHead = () => import('./rollup/_virtual_head-static.mjs').then((r) => r.default || r);
+const getServerEntry = () => import('./app/server.mjs').then((r) => r.default || r);
+const getSSRStyles = lazyCachedFunction(() => import('./app/styles.mjs').then((r) => r.default || r));
 const getSSRRenderer = lazyCachedFunction(async () => {
   const manifest = await getClientManifest();
   if (!manifest) {
@@ -337,7 +337,9 @@ const getSPARenderer = lazyCachedFunction(async () => {
     renderToString
   };
 });
+const PAYLOAD_CACHE = /* @__PURE__ */ new Map() ;
 const PAYLOAD_URL_RE = /\/_payload(\.[a-zA-Z0-9]+)?.js(\?.*)?$/;
+const PRERENDER_NO_SSR_ROUTES = /* @__PURE__ */ new Set(["/index.html", "/200.html", "/404.html"]);
 const renderer = defineRenderHandler(async (event) => {
   const nitroApp = useNitroApp();
   const ssrError = event.node.req.url?.startsWith("/__nuxt_error") ? getQuery(event) : null;
@@ -356,13 +358,16 @@ const renderer = defineRenderHandler(async (event) => {
   if (isRenderingPayload) {
     url = url.substring(0, url.lastIndexOf("/")) || "/";
     event.node.req.url = url;
+    if (PAYLOAD_CACHE.has(url)) {
+      return PAYLOAD_CACHE.get(url);
+    }
   }
   const routeOptions = getRouteRules(event);
   const ssrContext = {
     url,
     event,
     runtimeConfig: useRuntimeConfig(),
-    noSSR: event.context.nuxt?.noSSR || routeOptions.ssr === false || (false),
+    noSSR: event.context.nuxt?.noSSR || routeOptions.ssr === false || (PRERENDER_NO_SSR_ROUTES.has(url) ),
     error: !!ssrError,
     nuxt: void 0,
     /* NuxtApp */
@@ -370,6 +375,11 @@ const renderer = defineRenderHandler(async (event) => {
     _payloadReducers: {},
     islandContext
   };
+  const _PAYLOAD_EXTRACTION = !ssrContext.noSSR;
+  const payloadURL = _PAYLOAD_EXTRACTION ? joinURL(useRuntimeConfig().app.baseURL, url, "_payload.js") : void 0;
+  {
+    ssrContext.payload.prerenderedAt = Date.now();
+  }
   const renderer = ssrContext.noSSR ? await getSPARenderer() : await getSSRRenderer();
   const _rendered = await renderer.renderToString(ssrContext).catch(async (error) => {
     const _err = !ssrError && ssrContext.payload?.error || error;
@@ -388,7 +398,14 @@ const renderer = defineRenderHandler(async (event) => {
   }
   if (isRenderingPayload) {
     const response2 = renderPayloadResponse(ssrContext);
+    {
+      PAYLOAD_CACHE.set(url, response2);
+    }
     return response2;
+  }
+  if (_PAYLOAD_EXTRACTION) {
+    appendHeader(event, "x-nitro-prerender", joinURL(url, "_payload.js"));
+    PAYLOAD_CACHE.set(withoutTrailingSlash(url), renderPayloadResponse(ssrContext));
   }
   const renderedMeta = await ssrContext.renderMeta?.() ?? {};
   const inlinedStyles = await renderInlineStyles(ssrContext.modules ?? ssrContext._registeredComponents ?? []) ;
@@ -398,7 +415,7 @@ const renderer = defineRenderHandler(async (event) => {
     htmlAttrs: normalizeChunks([renderedMeta.htmlAttrs]),
     head: normalizeChunks([
       renderedMeta.headTags,
-      null,
+      _PAYLOAD_EXTRACTION ? `<link rel="modulepreload" href="${payloadURL}">` : null,
       NO_SCRIPTS ? null : _rendered.renderResourceHints(),
       _rendered.renderStyles(),
       inlinedStyles,
@@ -411,7 +428,7 @@ const renderer = defineRenderHandler(async (event) => {
     ]),
     body: [_rendered.html],
     bodyAppend: normalizeChunks([
-      NO_SCRIPTS ? void 0 : renderPayloadScript({ ssrContext, data: ssrContext.payload }),
+      NO_SCRIPTS ? void 0 : _PAYLOAD_EXTRACTION ? renderPayloadScript({ ssrContext, data: splitPayload(ssrContext).initial, src: payloadURL }) : renderPayloadScript({ ssrContext, data: ssrContext.payload }),
       routeOptions.experimentalNoScripts ? void 0 : _rendered.renderScripts(),
       // Note: bodyScripts may contain tags other than <script>
       renderedMeta.bodyScripts
@@ -482,6 +499,10 @@ function renderPayloadResponse(ssrContext) {
 }
 function renderPayloadScript(opts) {
   opts.data.config = opts.ssrContext.config;
+  const _PAYLOAD_EXTRACTION = !opts.ssrContext.noSSR;
+  if (_PAYLOAD_EXTRACTION) {
+    return `<script type="module">import p from "${opts.src}";window.__NUXT__={...p,...(${devalue(opts.data)})}<\/script>`;
+  }
   return `<script>window.__NUXT__=${devalue(opts.data)}<\/script>`;
 }
 function splitPayload(ssrContext) {

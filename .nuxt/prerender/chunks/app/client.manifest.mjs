@@ -86,7 +86,7 @@ const client_manifest = {
     "resourceType": "script",
     "module": true,
     "css": [],
-    "file": "error-404.fa60e15b.js",
+    "file": "error-404.b3dafa45.js",
     "imports": [
       "node_modules/nuxt/dist/app/entry.js"
     ],
@@ -106,7 +106,7 @@ const client_manifest = {
     "resourceType": "script",
     "module": true,
     "css": [],
-    "file": "error-500.365e7e98.js",
+    "file": "error-500.fe0f9c2e.js",
     "imports": [
       "node_modules/nuxt/dist/app/entry.js"
     ],
@@ -131,7 +131,7 @@ const client_manifest = {
     "dynamicImports": [
       "virtual:nuxt:E:/Freelancer/Demo/demo/.nuxt/error-component.mjs"
     ],
-    "file": "entry.572a7193.js",
+    "file": "entry.6421e6c1.js",
     "isEntry": true,
     "src": "node_modules/nuxt/dist/app/entry.js"
   },
@@ -157,7 +157,7 @@ const client_manifest = {
       "_Instagram.c08f4703.svg",
       "arrowcircledown.70034e24.svg"
     ],
-    "file": "index.3c237d7d.js",
+    "file": "index.26491243.js",
     "imports": [
       "node_modules/nuxt/dist/app/entry.js"
     ],
@@ -236,7 +236,7 @@ const client_manifest = {
       "node_modules/@nuxt/ui-templates/dist/templates/error-404.vue",
       "node_modules/@nuxt/ui-templates/dist/templates/error-500.vue"
     ],
-    "file": "error-component.8e04cbca.js",
+    "file": "error-component.031c1fe8.js",
     "imports": [
       "node_modules/nuxt/dist/app/entry.js"
     ],

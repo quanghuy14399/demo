@@ -1,21 +1,17 @@
-globalThis._importMeta_=globalThis._importMeta_||{url:"file:///_entry.js",env:process.env};import 'node-fetch-native/polyfill';
-import { Server as Server$1 } from 'node:http';
-import { Server } from 'node:https';
-import destr from 'destr';
-import { defineEventHandler, handleCacheHeaders, createEvent, eventHandler, setHeaders, sendRedirect, proxyRequest, getRequestHeader, setResponseStatus, setResponseHeader, getRequestHeaders, createError, createApp, createRouter as createRouter$1, toNodeListener, fetchWithEvent, lazyEventHandler } from 'h3';
-import { createFetch as createFetch$1, Headers } from 'ofetch';
-import { createCall, createFetch } from 'unenv/runtime/fetch/index';
-import { createHooks } from 'hookable';
-import { snakeCase } from 'scule';
-import { klona } from 'klona';
-import defu, { defuFn } from 'defu';
-import { hash } from 'ohash';
-import { parseURL, withoutBase, joinURL, getQuery, withQuery, withLeadingSlash, withoutTrailingSlash } from 'ufo';
-import { createStorage, prefixStorage } from 'unstorage';
-import { toRouteMatcher, createRouter } from 'radix3';
-import { promises } from 'node:fs';
-import { fileURLToPath } from 'node:url';
-import { dirname, resolve } from 'pathe';
+import 'file://E:/Freelancer/Demo/demo/node_modules/node-fetch-native/dist/polyfill.mjs';
+import { defineEventHandler, handleCacheHeaders, createEvent, eventHandler, setHeaders, sendRedirect, proxyRequest, getRequestHeader, setResponseStatus, setResponseHeader, getRequestHeaders, createApp, createRouter as createRouter$1, toNodeListener, fetchWithEvent, lazyEventHandler } from 'file://E:/Freelancer/Demo/demo/node_modules/h3/dist/index.mjs';
+import { createFetch as createFetch$1, Headers } from 'file://E:/Freelancer/Demo/demo/node_modules/ofetch/dist/node.mjs';
+import destr from 'file://E:/Freelancer/Demo/demo/node_modules/destr/dist/index.mjs';
+import { createCall, createFetch } from 'file://E:/Freelancer/Demo/demo/node_modules/unenv/runtime/fetch/index.mjs';
+import { createHooks } from 'file://E:/Freelancer/Demo/demo/node_modules/hookable/dist/index.mjs';
+import { snakeCase } from 'file://E:/Freelancer/Demo/demo/node_modules/scule/dist/index.mjs';
+import { klona } from 'file://E:/Freelancer/Demo/demo/node_modules/klona/dist/index.mjs';
+import defu, { defuFn } from 'file://E:/Freelancer/Demo/demo/node_modules/defu/dist/defu.mjs';
+import { hash } from 'file://E:/Freelancer/Demo/demo/node_modules/ohash/dist/index.mjs';
+import { parseURL, withoutBase, joinURL, getQuery, withQuery } from 'file://E:/Freelancer/Demo/demo/node_modules/ufo/dist/index.mjs';
+import { createStorage, prefixStorage } from 'file://E:/Freelancer/Demo/demo/node_modules/unstorage/dist/index.mjs';
+import unstorage_47drivers_47fs from 'file://E:/Freelancer/Demo/demo/node_modules/unstorage/drivers/fs.mjs';
+import { toRouteMatcher, createRouter } from 'file://E:/Freelancer/Demo/demo/node_modules/radix3/dist/index.mjs';
 
 const inlineAppConfig = {};
 
@@ -109,38 +105,22 @@ new Proxy(/* @__PURE__ */ Object.create(null), {
   }
 });
 
-const _assets = {
+const serverAssets = [{"baseName":"server","dir":"E:/Freelancer/Demo/demo/server/assets"}];
 
-};
+const assets = createStorage();
 
-function normalizeKey(key) {
-  if (!key) {
-    return "";
-  }
-  return key.split("?")[0].replace(/[/\\]/g, ":").replace(/:+/g, ":").replace(/^:|:$/g, "");
+for (const asset of serverAssets) {
+  assets.mount(asset.baseName, unstorage_47drivers_47fs({ base: asset.dir }));
 }
-
-const assets$1 = {
-  getKeys() {
-    return Promise.resolve(Object.keys(_assets))
-  },
-  hasItem (id) {
-    id = normalizeKey(id);
-    return Promise.resolve(id in _assets)
-  },
-  getItem (id) {
-    id = normalizeKey(id);
-    return Promise.resolve(_assets[id] ? _assets[id].import() : null)
-  },
-  getMeta (id) {
-    id = normalizeKey(id);
-    return Promise.resolve(_assets[id] ? _assets[id].meta : {})
-  }
-};
 
 const storage = createStorage({});
 
-storage.mount('/assets', assets$1);
+storage.mount('/assets', assets);
+
+storage.mount('root', unstorage_47drivers_47fs({"driver":"fs","readOnly":true,"base":"E:\\Freelancer\\Demo\\demo","ignore":["**/node_modules/**","**/.git/**"]}));
+storage.mount('src', unstorage_47drivers_47fs({"driver":"fs","readOnly":true,"base":"E:\\Freelancer\\Demo\\demo\\server","ignore":["**/node_modules/**","**/.git/**"]}));
+storage.mount('build', unstorage_47drivers_47fs({"driver":"fs","readOnly":false,"base":"E:\\Freelancer\\Demo\\demo\\.nuxt","ignore":["**/node_modules/**","**/.git/**"]}));
+storage.mount('cache', unstorage_47drivers_47fs({"driver":"fs","readOnly":false,"base":"E:\\Freelancer\\Demo\\demo\\.nuxt\\cache","ignore":["**/node_modules/**","**/.git/**"]}));
 
 function useStorage(base = "") {
   return base ? prefixStorage(storage, base) : storage;
@@ -513,262 +493,9 @@ const errorHandler = (async function errorhandler(error, event) {
   event.node.res.end(await res.text());
 });
 
-const assets = {
-  "/favicon.ico": {
-    "type": "image/vnd.microsoft.icon",
-    "etag": "\"10be-n8egyE9tcb7sKGr/pYCaQ4uWqxI\"",
-    "mtime": "2023-04-28T19:54:10.000Z",
-    "size": 4286,
-    "path": "../public/favicon.ico"
-  },
-  "/_nuxt/argency.aab0e6de.svg": {
-    "type": "image/svg+xml",
-    "etag": "\"1af64-zOrP7Jh46HrohJP6RV108OhBD2E\"",
-    "mtime": "2023-05-14T15:11:27.148Z",
-    "size": 110436,
-    "path": "../public/_nuxt/argency.aab0e6de.svg"
-  },
-  "/_nuxt/arrowcircledown.70034e24.svg": {
-    "type": "image/svg+xml",
-    "etag": "\"1c5-om7XWkzKqXl1pUifZvK66hVTUkg\"",
-    "mtime": "2023-05-14T15:11:27.148Z",
-    "size": 453,
-    "path": "../public/_nuxt/arrowcircledown.70034e24.svg"
-  },
-  "/_nuxt/ellipse-left.9469fc00.svg": {
-    "type": "image/svg+xml",
-    "etag": "\"1b3-o04FIGwjAZh0wScqPBLczXj3tBY\"",
-    "mtime": "2023-05-14T15:11:27.148Z",
-    "size": 435,
-    "path": "../public/_nuxt/ellipse-left.9469fc00.svg"
-  },
-  "/_nuxt/ellipse-right.d3fd0ca9.svg": {
-    "type": "image/svg+xml",
-    "etag": "\"1ca-FQ8ED+yZFH8UynIFzQoIeX7jxIU\"",
-    "mtime": "2023-05-14T15:11:27.148Z",
-    "size": 458,
-    "path": "../public/_nuxt/ellipse-right.d3fd0ca9.svg"
-  },
-  "/_nuxt/entry.12b61ea7.css": {
-    "type": "text/css; charset=utf-8",
-    "etag": "\"4773-jGBJeIRxghPTZj8x3jj/UmCuq2c\"",
-    "mtime": "2023-05-14T15:11:27.149Z",
-    "size": 18291,
-    "path": "../public/_nuxt/entry.12b61ea7.css"
-  },
-  "/_nuxt/entry.572a7193.js": {
-    "type": "application/javascript",
-    "etag": "\"215a5-K9V+xySeAyYyDryIXKx5SNc6oe4\"",
-    "mtime": "2023-05-14T15:11:27.149Z",
-    "size": 136613,
-    "path": "../public/_nuxt/entry.572a7193.js"
-  },
-  "/_nuxt/error-404.23f2309d.css": {
-    "type": "text/css; charset=utf-8",
-    "etag": "\"e2e-ivsbEmi48+s9HDOqtrSdWFvddYQ\"",
-    "mtime": "2023-05-14T15:11:27.148Z",
-    "size": 3630,
-    "path": "../public/_nuxt/error-404.23f2309d.css"
-  },
-  "/_nuxt/error-404.fa60e15b.js": {
-    "type": "application/javascript",
-    "etag": "\"1962-mkuBea7kP9vw0ylwFp5OtodmJOQ\"",
-    "mtime": "2023-05-14T15:11:27.145Z",
-    "size": 6498,
-    "path": "../public/_nuxt/error-404.fa60e15b.js"
-  },
-  "/_nuxt/error-500.365e7e98.js": {
-    "type": "application/javascript",
-    "etag": "\"756-6ykEICNh2yptGFUXlmFW9+2qYk4\"",
-    "mtime": "2023-05-14T15:11:27.149Z",
-    "size": 1878,
-    "path": "../public/_nuxt/error-500.365e7e98.js"
-  },
-  "/_nuxt/error-500.aa16ed4d.css": {
-    "type": "text/css; charset=utf-8",
-    "etag": "\"79e-7j4Tsx89siDo85YoIs0XqsPWmPI\"",
-    "mtime": "2023-05-14T15:11:27.149Z",
-    "size": 1950,
-    "path": "../public/_nuxt/error-500.aa16ed4d.css"
-  },
-  "/_nuxt/error-component.8e04cbca.js": {
-    "type": "application/javascript",
-    "etag": "\"45e-pOJatlkCnMRDcpgKCBtTcKPzIHI\"",
-    "mtime": "2023-05-14T15:11:27.149Z",
-    "size": 1118,
-    "path": "../public/_nuxt/error-component.8e04cbca.js"
-  },
-  "/_nuxt/index.3c237d7d.js": {
-    "type": "application/javascript",
-    "etag": "\"e0df-yiBxyjUPnsI3+yv/zOTGaWyFimI\"",
-    "mtime": "2023-05-14T15:11:27.149Z",
-    "size": 57567,
-    "path": "../public/_nuxt/index.3c237d7d.js"
-  },
-  "/_nuxt/logo.3b21424a.svg": {
-    "type": "image/svg+xml",
-    "etag": "\"1638-GW9A7VU9xMFaWJPNmwbu9XjXzxg\"",
-    "mtime": "2023-05-14T15:11:27.148Z",
-    "size": 5688,
-    "path": "../public/_nuxt/logo.3b21424a.svg"
-  },
-  "/_nuxt/long-arrow.e7bcb4b6.svg": {
-    "type": "image/svg+xml",
-    "etag": "\"180-bZhpGvwg0MndhcaJm1DsFqP7sBs\"",
-    "mtime": "2023-05-14T15:11:27.148Z",
-    "size": 384,
-    "path": "../public/_nuxt/long-arrow.e7bcb4b6.svg"
-  },
-  "/_nuxt/rectangle-left.dead8c66.svg": {
-    "type": "image/svg+xml",
-    "etag": "\"df-/MvTGCC+EodiTIWadbfvSUqFGh4\"",
-    "mtime": "2023-05-14T15:11:27.148Z",
-    "size": 223,
-    "path": "../public/_nuxt/rectangle-left.dead8c66.svg"
-  },
-  "/_nuxt/rectangle-right.f046a437.svg": {
-    "type": "image/svg+xml",
-    "etag": "\"99-qwsL+DgnZeNW0hP8Yp3PDINz5YM\"",
-    "mtime": "2023-05-14T15:11:27.148Z",
-    "size": 153,
-    "path": "../public/_nuxt/rectangle-right.f046a437.svg"
-  },
-  "/_nuxt/service-img-left.fb07e9e4.svg": {
-    "type": "image/svg+xml",
-    "etag": "\"f8ac-wzQwSv7vZd8HX11SzodJhe9Lkv8\"",
-    "mtime": "2023-05-14T15:11:27.146Z",
-    "size": 63660,
-    "path": "../public/_nuxt/service-img-left.fb07e9e4.svg"
-  },
-  "/_nuxt/service-img-right.febaec91.svg": {
-    "type": "image/svg+xml",
-    "etag": "\"23b36-CdybexDI/trcnaGzA2bmMVPpfWQ\"",
-    "mtime": "2023-05-14T15:11:27.148Z",
-    "size": 146230,
-    "path": "../public/_nuxt/service-img-right.febaec91.svg"
-  },
-  "/_nuxt/Tencent.db209568.png": {
-    "type": "image/png",
-    "etag": "\"19f0-ulR7OqOTa22y5IedPNCkp0yeCUo\"",
-    "mtime": "2023-05-14T15:11:27.148Z",
-    "size": 6640,
-    "path": "../public/_nuxt/Tencent.db209568.png"
-  },
-  "/_nuxt/_Google.33510df0.svg": {
-    "type": "image/svg+xml",
-    "etag": "\"582-VXLIyYlabI8clKi1mDlVl2S9Fhw\"",
-    "mtime": "2023-05-14T15:11:27.148Z",
-    "size": 1410,
-    "path": "../public/_nuxt/_Google.33510df0.svg"
-  },
-  "/_nuxt/_Instagram.c08f4703.svg": {
-    "type": "image/svg+xml",
-    "etag": "\"1a64-h5gB9gvsCelJDbiA+LfzFdN110M\"",
-    "mtime": "2023-05-14T15:11:27.148Z",
-    "size": 6756,
-    "path": "../public/_nuxt/_Instagram.c08f4703.svg"
-  }
-};
-
-function readAsset (id) {
-  const serverDir = dirname(fileURLToPath(globalThis._importMeta_.url));
-  return promises.readFile(resolve(serverDir, assets[id].path))
-}
-
-const publicAssetBases = {"/_nuxt":{"maxAge":31536000}};
-
-function isPublicAssetURL(id = '') {
-  if (assets[id]) {
-    return true
-  }
-  for (const base in publicAssetBases) {
-    if (id.startsWith(base)) { return true }
-  }
-  return false
-}
-
-function getAsset (id) {
-  return assets[id]
-}
-
-const METHODS = /* @__PURE__ */ new Set(["HEAD", "GET"]);
-const EncodingMap = { gzip: ".gz", br: ".br" };
-const _f4b49z = eventHandler((event) => {
-  if (event.node.req.method && !METHODS.has(event.node.req.method)) {
-    return;
-  }
-  let id = decodeURIComponent(
-    withLeadingSlash(
-      withoutTrailingSlash(parseURL(event.node.req.url).pathname)
-    )
-  );
-  let asset;
-  const encodingHeader = String(
-    event.node.req.headers["accept-encoding"] || ""
-  );
-  const encodings = [
-    ...encodingHeader.split(",").map((e) => EncodingMap[e.trim()]).filter(Boolean).sort(),
-    ""
-  ];
-  if (encodings.length > 1) {
-    event.node.res.setHeader("Vary", "Accept-Encoding");
-  }
-  for (const encoding of encodings) {
-    for (const _id of [id + encoding, joinURL(id, "index.html" + encoding)]) {
-      const _asset = getAsset(_id);
-      if (_asset) {
-        asset = _asset;
-        id = _id;
-        break;
-      }
-    }
-  }
-  if (!asset) {
-    if (isPublicAssetURL(id)) {
-      event.node.res.removeHeader("cache-control");
-      throw createError({
-        statusMessage: "Cannot find static asset " + id,
-        statusCode: 404
-      });
-    }
-    return;
-  }
-  const ifNotMatch = event.node.req.headers["if-none-match"] === asset.etag;
-  if (ifNotMatch) {
-    event.node.res.statusCode = 304;
-    event.node.res.end();
-    return;
-  }
-  const ifModifiedSinceH = event.node.req.headers["if-modified-since"];
-  const mtimeDate = new Date(asset.mtime);
-  if (ifModifiedSinceH && asset.mtime && new Date(ifModifiedSinceH) >= mtimeDate) {
-    event.node.res.statusCode = 304;
-    event.node.res.end();
-    return;
-  }
-  if (asset.type && !event.node.res.getHeader("Content-Type")) {
-    event.node.res.setHeader("Content-Type", asset.type);
-  }
-  if (asset.etag && !event.node.res.getHeader("ETag")) {
-    event.node.res.setHeader("ETag", asset.etag);
-  }
-  if (asset.mtime && !event.node.res.getHeader("Last-Modified")) {
-    event.node.res.setHeader("Last-Modified", mtimeDate.toUTCString());
-  }
-  if (asset.encoding && !event.node.res.getHeader("Content-Encoding")) {
-    event.node.res.setHeader("Content-Encoding", asset.encoding);
-  }
-  if (asset.size > 0 && !event.node.res.getHeader("Content-Length")) {
-    event.node.res.setHeader("Content-Length", asset.size);
-  }
-  return readAsset(id);
-});
-
-const _lazy_8OnEYG = () => import('../handlers/renderer.mjs').then(function (n) { return n.r; });
+const _lazy_8OnEYG = () => import('../renderer.mjs').then(function (n) { return n.r; });
 
 const handlers = [
-  { route: '', handler: _f4b49z, lazy: false, middleware: true, method: undefined },
-  { route: '/__nuxt_error', handler: _lazy_8OnEYG, lazy: true, middleware: false, method: undefined },
   { route: '/**', handler: _lazy_8OnEYG, lazy: true, middleware: false, method: undefined }
 ];
 
@@ -837,22 +564,7 @@ function createNitroApp() {
 const nitroApp = createNitroApp();
 const useNitroApp = () => nitroApp;
 
-const cert = process.env.NITRO_SSL_CERT;
-const key = process.env.NITRO_SSL_KEY;
-const server = cert && key ? new Server({ key, cert }, toNodeListener(nitroApp.h3App)) : new Server$1(toNodeListener(nitroApp.h3App));
-const port = destr(process.env.NITRO_PORT || process.env.PORT) || 3e3;
-const host = process.env.NITRO_HOST || process.env.HOST;
-const s = server.listen(port, host, (err) => {
-  if (err) {
-    console.error(err);
-    process.exit(1);
-  }
-  const protocol = cert && key ? "https" : "http";
-  const i = s.address();
-  const baseURL = (useRuntimeConfig().app.baseURL || "").replace(/\/$/, "");
-  const url = `${protocol}://${i.family === "IPv6" ? `[${i.address}]` : i.address}:${i.port}${baseURL}`;
-  console.log(`Listening ${url}`);
-});
+const localFetch = nitroApp.localFetch;
 {
   process.on(
     "unhandledRejection",
@@ -863,7 +575,6 @@ const s = server.listen(port, host, (err) => {
     (err) => console.error("[nitro] [dev] [uncaughtException] " + err)
   );
 }
-const nodeServer = {};
 
-export { useRuntimeConfig as a, getRouteRules as g, nodeServer as n, useNitroApp as u };
-//# sourceMappingURL=node-server.mjs.map
+export { useRuntimeConfig as a, getRouteRules as g, localFetch as l, useNitroApp as u };
+//# sourceMappingURL=nitro-prerenderer.mjs.map
