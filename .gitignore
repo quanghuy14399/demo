@@ -3,5 +3,4 @@ node_modules
 .nitro
 .cache
 .env
-dist
 .DS_Store
